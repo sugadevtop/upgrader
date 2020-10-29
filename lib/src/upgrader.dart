@@ -282,11 +282,11 @@ class Upgrader {
     if (debugDisplayAlways || (debugDisplayOnce && !_hasAlerted)) {
       return true;
     }
-    if (!isUpdateAvailable()) {
-      return false;
-    }
     if (blocked()) {
       return true;
+    }
+    if (!isUpdateAvailable()) {
+      return false;
     }
     if (isTooSoon() || alreadyIgnoredThisVersion()) {
       return false;
