@@ -58,8 +58,7 @@ class Upgrader {
   /// The localized messages used for display in upgrader.
   UpgraderMessages messages;
 
-  final notInitializedExceptionMessage =
-      'initialize() not called. Must be called first.';
+  final notInitializedExceptionMessage = 'initialize() not called. Must be called first.';
 
   /// Called when the ignore button is tapped or otherwise activated.
   /// Return false when the default behavior should not execute.
@@ -136,8 +135,7 @@ class Upgrader {
     if (_packageInfo == null) {
       _packageInfo = await PackageInfo.fromPlatform();
       if (debugLogging) {
-        print(
-            'upgrader: package info packageName: ${_packageInfo.packageName}');
+        print('upgrader: package info packageName: ${_packageInfo.packageName}');
         print('upgrader: package info version: ${_packageInfo.version}');
       }
     }
@@ -163,12 +161,9 @@ class Upgrader {
         print('upgrader: appcast item count: $count');
       }
       final bestItem = appcast.bestItem();
-      if (bestItem != null &&
-          bestItem.versionString != null &&
-          bestItem.versionString.isNotEmpty) {
+      if (bestItem != null && bestItem.versionString != null && bestItem.versionString.isNotEmpty) {
         if (debugLogging) {
-          print(
-              'upgrader: appcast best item version: ${bestItem.versionString}');
+          print('upgrader: appcast best item version: ${bestItem.versionString}');
         }
         _appStoreVersion ??= bestItem.versionString;
         _appStoreListingURL ??= bestItem.fileURL;
@@ -192,8 +187,7 @@ class Upgrader {
       final iTunes = ITunesSearchAPI();
       iTunes.client = client;
       final country = code;
-      final response = await iTunes.lookupByBundleId(_packageInfo.packageName,
-          country: country);
+      final response = await iTunes.lookupByBundleId(_packageInfo.packageName, country: country);
 
       _appStoreVersion ??= ITunesResults.version(response);
       _appStoreListingURL ??= ITunesResults.trackViewUrl(response);
@@ -203,9 +197,7 @@ class Upgrader {
   }
 
   bool _isAppcastThisPlatform() {
-    if (appcastConfig == null ||
-        appcastConfig.url == null ||
-        appcastConfig.url.isEmpty) {
+    if (appcastConfig == null || appcastConfig.url == null || appcastConfig.url.isEmpty) {
       return false;
     }
 
@@ -246,10 +238,8 @@ class Upgrader {
   String message() {
     var msg = messages.message(UpgraderMessage.body);
     msg = msg.replaceAll('{{appName}}', appName() ?? '');
-    msg = msg.replaceAll(
-        '{{currentAppStoreVersion}}', currentAppStoreVersion() ?? '');
-    msg = msg.replaceAll(
-        '{{currentInstalledVersion}}', currentInstalledVersion() ?? '');
+    msg = msg.replaceAll('{{currentAppStoreVersion}}', currentAppStoreVersion() ?? '');
+    msg = msg.replaceAll('{{currentInstalledVersion}}', currentInstalledVersion() ?? '');
     return msg;
   }
 
@@ -258,11 +248,7 @@ class Upgrader {
       if (shouldDisplayUpgrade()) {
         _displayed = true;
         Future.delayed(Duration(milliseconds: 0), () {
-          _showDialog(
-              context: context,
-              title: messages.message(UpgraderMessage.title),
-              message: message(),
-              canDismissDialog: canDismissDialog);
+          _showDialog(context: context, title: messages.message(UpgraderMessage.title), message: message(), canDismissDialog: canDismissDialog);
         });
       }
     }
@@ -282,11 +268,11 @@ class Upgrader {
     if (debugDisplayAlways || (debugDisplayOnce && !_hasAlerted)) {
       return true;
     }
-    if (!isUpdateAvailable()) {
-      return false;
-    }
     if (blocked()) {
       return true;
+    }
+    if (!isUpdateAvailable()) {
+      return false;
     }
     if (isTooSoon() || alreadyIgnoredThisVersion()) {
       return false;
@@ -319,8 +305,7 @@ class Upgrader {
   }
 
   bool alreadyIgnoredThisVersion() {
-    return _userIgnoredVersion != null &&
-        _userIgnoredVersion == _appStoreVersion;
+    return _userIgnoredVersion != null && _userIgnoredVersion == _appStoreVersion;
   }
 
   bool isUpdateAvailable() {
@@ -355,20 +340,14 @@ class Upgrader {
       // Get the system locale
       locale = WidgetsBinding.instance.window.locale;
     }
-    final code = locale == null || locale.countryCode == null
-        ? 'US'
-        : locale.countryCode;
+    final code = locale == null || locale.countryCode == null ? 'US' : locale.countryCode;
     if (debugLogging) {
       print('upgrader: countryCode: $code');
     }
     return code;
   }
 
-  void _showDialog(
-      {@required BuildContext context,
-      @required String title,
-      @required String message,
-      bool canDismissDialog}) {
+  void _showDialog({@required BuildContext context, @required String title, @required String message, bool canDismissDialog}) {
     if (debugLogging) {
       print('upgrader: showDialog title: $title');
       print('upgrader: showDialog message: $message');
@@ -387,26 +366,14 @@ class Upgrader {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Text(message),
-              Padding(
-                  padding: EdgeInsets.only(top: 15.0),
-                  child: Text(messages.message(UpgraderMessage.prompt))),
+              Padding(padding: EdgeInsets.only(top: 15.0), child: Text(messages.message(UpgraderMessage.prompt))),
             ],
           ),
           actions: <Widget>[
             if (showIgnore)
-              FlatButton(
-                  child:
-                      Text(messages.message(UpgraderMessage.buttonTitleIgnore)),
-                  onPressed: () => onUserIgnored(context, true)),
-            if (showLater)
-              FlatButton(
-                  child:
-                      Text(messages.message(UpgraderMessage.buttonTitleLater)),
-                  onPressed: () => onUserLater(context, true)),
-            FlatButton(
-                child:
-                    Text(messages.message(UpgraderMessage.buttonTitleUpdate)),
-                onPressed: () => onUserUpdated(context, !blocked())),
+              FlatButton(child: Text(messages.message(UpgraderMessage.buttonTitleIgnore)), onPressed: () => onUserIgnored(context, true)),
+            if (showLater) FlatButton(child: Text(messages.message(UpgraderMessage.buttonTitleLater)), onPressed: () => onUserLater(context, true)),
+            FlatButton(child: Text(messages.message(UpgraderMessage.buttonTitleUpdate)), onPressed: () => onUserUpdated(context, !blocked())),
           ],
         );
       },
